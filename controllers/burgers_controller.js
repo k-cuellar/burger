@@ -7,7 +7,7 @@ var burger = require("../models/burger.js");
 
 // Create all our routes and set up logic within those routes where required.
 router.get("/", function(req, res) {
-    burger.all(function(data) {
+    burger.selectAll(function(data) {
       var hbsObject = {
         burgers: data
       };
@@ -17,13 +17,12 @@ router.get("/", function(req, res) {
   });
   
   router.post("/", function(req, res) {
-    burger.create([
+    burger.insertOne([
       "burger_name", "devoured"
     ], [
       req.body.burger_name, req.body.devoured
-    ], function(result) {
-      // Send back the ID of the new quote
-      res.json({ id: result.insertId });
+    ], function() {
+      res.redirect("/");
     });
   });
   
@@ -32,7 +31,7 @@ router.get("/", function(req, res) {
   
     console.log("condition", condition);
   
-    burger.update({
+    burger.updateOne({
       devoured: req.body.devoured
     }, condition, function(result) {
       if (result.changedRows == 0) {
@@ -40,7 +39,8 @@ router.get("/", function(req, res) {
         return res.status(404).end();
       } else {
         res.status(200).end();
-      }
+      };
+      res.redirect("/");
     });
   });
   
@@ -53,7 +53,8 @@ router.get("/", function(req, res) {
         return res.status(404).end();
       } else {
         res.status(200).end();
-      }
+      };
+      res.redirect("/");
     });
   });
   
